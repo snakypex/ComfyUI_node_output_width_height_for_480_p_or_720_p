@@ -8,7 +8,7 @@ class ResolutionFromImagePreset:
         return {
             "required": {
                 "image": ("IMAGE",),
-                "preset": (["480p", "540p", "720p"],),
+                "preset": (["480p", "540p", "720p", "1080p"],),
             },
             "optional": {
                 "round_to": ("INT", {"default": 8, "min": 1, "max": 512, "step": 1}),
@@ -59,7 +59,7 @@ class ResizeToPresetKeepAR:
         return {
             "required": {
                 "image": ("IMAGE",),
-                "preset": (["480p", "540p", "720p"],),
+                "preset": (["480p", "540p", "720p", "1080p"],),
             },
             "optional": {
                 "strategy": (["video_mode", "long_side", "height", "width"], {"default": "video_mode"}),
@@ -86,7 +86,7 @@ class ResizeToPresetKeepAR:
             raise ValueError(f"Unexpected image shape: {tuple(image.shape)}; expected [B,H,W,C]")
 
         B, src_h, src_w, C = image.shape
-        tgt = 480 if preset == "480p" else 540 if preset == "540p" else 720
+        tgt = 480 if preset == "480p" else 720 if preset == "720p" else 1080
 
         if strategy == "height":
             scale = tgt / float(src_h)
