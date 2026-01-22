@@ -127,7 +127,8 @@ class ResizeToPresetKeepAR:
         new_w = max(1, new_w)
         new_h = max(1, new_h)
 
-        return (new_w, new_h)
+        #return (new_w, new_h)
+        return (src_w, src_h)
 
 
 NODE_CLASS_MAPPINGS = {
