@@ -33,16 +33,21 @@ class ResolutionFromImagePreset:
         if len(image.shape) != 4:
             raise ValueError(f"Unexpected image shape: {tuple(image.shape)}; expected [B,H,W,C]")
 
+        # --- Prendre uniquement la première image du batch ---
+        image = image[0:1]
+
         if strict_preset:
             if preset == "480p":
                 return (854, 480)
             elif preset == "540p":
                 return (960, 540)
+            elif preset == "1080p":
+                return (1920, 1080)
             else:
                 return (1280, 720)
 
         _, src_h, src_w, _ = image.shape
-        tgt_h = 480 if preset == "480p" else 540 if preset == "540p" else 720
+        tgt_h = 480 if preset == "480p" else 540 if preset == "540p" else 1080 if preset == "1080p" else 720
 
         scale = tgt_h / float(src_h)
         tgt_w_f = src_w * scale
@@ -85,8 +90,11 @@ class ResizeToPresetKeepAR:
         if len(image.shape) != 4:
             raise ValueError(f"Unexpected image shape: {tuple(image.shape)}; expected [B,H,W,C]")
 
+        # --- Prendre uniquement la première image du batch ---
+        image = image[0:1]
+
         B, src_h, src_w, C = image.shape
-        tgt = 480 if preset == "480p" else 720 if preset == "720p" else 1080
+        tgt = 480 if preset == "480p" else 540 if preset == "540p" else 1080 if preset == "1080p" else 720
 
         if strategy == "height":
             scale = tgt / float(src_h)
@@ -136,6 +144,6 @@ NODE_CLASS_MAPPINGS = {
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
-    "ResolutionFromImagePreset": "Resolution From Image (480p/540p/720p)",
-    "ResizeToPresetKeepAR": "Resize To 480p/540p/720p (Keep AR)",
+    "ResolutionFromImagePreset": "Resolution From Image (480p/540p/720p/1080p)",
+    "ResizeToPresetKeepAR": "Resize To 480p/540p/720p/1080p (Keep AR)",
 }
